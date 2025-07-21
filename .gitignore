@@ -1,0 +1,27 @@
+# .NET Build outputs
+bin/
+obj/
+out/
+
+# .NET Core
+*.dll
+*.pdb
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Logs
+*.log
+
+# Docker
+.dockerignore
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
