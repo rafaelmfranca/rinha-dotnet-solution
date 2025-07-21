@@ -1,0 +1,17 @@
+services:
+  cache:
+    ports:
+      - "6379:6379"
+  
+  db:
+    ports:
+      - "5432:5432"
+
+  backend-01: &backend
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+
+  backend-02:
+    <<: *backend
+    hostname: backend-02
