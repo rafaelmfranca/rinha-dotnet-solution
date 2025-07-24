@@ -34,7 +34,8 @@ public sealed class HealthCheckWorker(
         }
     }
 
-    private async Task CheckAndCacheProcessorHealthAsync(PaymentProcessor processor,
+    private async Task CheckAndCacheProcessorHealthAsync(
+        PaymentProcessor processor,
         CancellationToken cancellationToken = default)
     {
         try

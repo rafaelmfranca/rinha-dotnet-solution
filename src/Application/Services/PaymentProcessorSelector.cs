@@ -6,7 +6,7 @@ namespace Application.Services;
 
 public sealed class PaymentProcessorSelector(IProcessorHealthCache healthCache)
 {
-    private const int MaxResponseTimeMs = 30;
+    private const int MaxResponseTimeMs = 100;
 
     public async Task<PaymentProcessor> ChooseBestProcessorAsync(CancellationToken cancellationToken = default)
     {
@@ -35,6 +35,6 @@ public sealed class PaymentProcessorSelector(IProcessorHealthCache healthCache)
         {
             null or { IsHealthy: false } => 0,
             { IsHealthy: true, MinResponseTimeMs: <= MaxResponseTimeMs } => 2,
-            { IsHealthy: true } => 1,
+            { IsHealthy: true } => 1
         };
 }

@@ -2,6 +2,7 @@ using System.Net.Http.Json;
 using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Interfaces;
@@ -11,7 +12,13 @@ using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Gateway;
 
-public readonly record struct HealthResponse(bool Failing, int MinResponseTime);
+public readonly record struct HealthResponse(
+    [property: JsonPropertyName("failing")]
+    bool Failing,
+    [property: JsonPropertyName("minResponseTime")]
+    int MinResponseTime);
+
+public readonly record struct PaymentProcessorRequest(Guid CorrelationId, decimal Amount, DateTime RequestedAt);
 
 public sealed class PaymentProcessorGateway(
     HttpClient httpClient,
@@ -28,7 +35,10 @@ public sealed class PaymentProcessorGateway(
 
             if (response.IsSuccessStatusCode)
             {
-                var health = await response.Content.ReadFromJsonAsync<HealthResponse>(cancellationToken);
+                var health = await response.Content.ReadFromJsonAsync(
+                    InfraJsonSerializerContext.Default.HealthResponse,
+                    cancellationToken);
+
                 return new ProcessorHealthStatus(!health.Failing, health.MinResponseTime);
             }
         }
@@ -50,15 +60,10 @@ public sealed class PaymentProcessorGateway(
         try
         {
             var baseUrl = GetBaseUrl(processor);
-            var request = new
-            {
-                correlationId = correlationId.Value,
-                amount = amount.Amount,
-                requestedAt
-            };
+            var request = new PaymentProcessorRequest(correlationId.Value, amount.Amount, requestedAt);
 
             using var content = new StringContent(
-                JsonSerializer.Serialize(request, JsonSerializerOptions.Web),
+                JsonSerializer.Serialize(request, InfraJsonSerializerContext.Default.PaymentProcessorRequest),
                 Encoding.UTF8,
                 MediaTypeNames.Application.Json);
 

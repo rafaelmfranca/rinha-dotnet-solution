@@ -8,6 +8,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     options.SerializerOptions.PropertyNameCaseInsensitive = true;
+    options.SerializerOptions.TypeInfoResolver = ApiJsonSerializerContext.Default;
 });
 
 builder.Services
@@ -16,4 +17,4 @@ builder.Services
 
 var app = builder.Build();
 app.MapApiEndpoints();
-app.Run();
+app.Run("http://0.0.0.0:5000");

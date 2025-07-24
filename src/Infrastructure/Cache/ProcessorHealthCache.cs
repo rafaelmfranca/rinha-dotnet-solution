@@ -19,7 +19,7 @@ public sealed class ProcessorHealthCache(IConnectionMultiplexer redis) : IProces
     {
         var value = await _database.StringGetAsync(new RedisKey(GetProcessorKey(processor)));
         return value.HasValue
-            ? JsonSerializer.Deserialize<ProcessorHealthStatus>(value.ToString())
+            ? JsonSerializer.Deserialize(value.ToString(), InfraJsonSerializerContext.Default.ProcessorHealthStatus)
             : null;
     }
 
@@ -28,7 +28,7 @@ public sealed class ProcessorHealthCache(IConnectionMultiplexer redis) : IProces
         ProcessorHealthStatus health,
         CancellationToken cancellationToken = default)
     {
-        var value = JsonSerializer.Serialize(health);
+        var value = JsonSerializer.Serialize(health, InfraJsonSerializerContext.Default.ProcessorHealthStatus);
         await _database.StringSetAsync(new RedisKey(GetProcessorKey(processor)), new RedisValue(value), CacheTtl);
     }
 

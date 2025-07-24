@@ -54,7 +54,7 @@ public static class Endpoints
             return Results.NoContent();
         });
 
-        app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow }));
+        app.MapGet("/health", () => Results.Ok(new HealthStatusResponse("healthy", DateTime.UtcNow)));
 
         app.MapGet("/config", (IConfiguration configuration) => Results.Ok(configuration.AsEnumerable()));
     }

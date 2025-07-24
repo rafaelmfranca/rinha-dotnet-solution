@@ -7,3 +7,5 @@ public sealed record PaymentApiRequest([Required] Guid CorrelationId, [Required]
 public sealed record PaymentSummaryApiResponse(ProcessorSummaryApi Default, ProcessorSummaryApi Fallback);
 
 public sealed record ProcessorSummaryApi(int TotalRequests, decimal TotalAmount);
+
+public sealed record HealthStatusResponse(string Status, DateTime Timestamp);
