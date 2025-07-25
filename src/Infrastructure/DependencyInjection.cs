@@ -25,11 +25,12 @@ public static class DependencyInjection
             .AddSingleton<IProcessorHealthCache, ProcessorHealthCache>()
             .AddHttpClient<IPaymentProcessorGateway, PaymentProcessorGateway>(client =>
             {
-                client.Timeout = TimeSpan.FromSeconds(5);
+                client.Timeout = TimeSpan.FromSeconds(3);
             })
             .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
             {
-                MaxConnectionsPerServer = 10
+                MaxConnectionsPerServer = 20,
+                EnableMultipleHttp2Connections = true
             })
             .Services;
 

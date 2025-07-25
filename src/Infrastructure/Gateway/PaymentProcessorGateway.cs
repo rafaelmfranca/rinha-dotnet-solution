@@ -31,7 +31,10 @@ public sealed class PaymentProcessorGateway(
         try
         {
             var baseUrl = GetBaseUrl(processor);
-            var response = await httpClient.GetAsync($"{baseUrl}/payments/service-health", cancellationToken);
+            var response = await httpClient.GetAsync(
+                $"{baseUrl}/payments/service-health",
+                HttpCompletionOption.ResponseHeadersRead,
+                cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
