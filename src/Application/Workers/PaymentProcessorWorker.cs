@@ -23,21 +23,20 @@ public sealed class PaymentProcessorWorker(
             try
             {
                 var request = await paymentQueue.DequeueAsync(cancellationToken);
-
                 if (request.HasValue)
-                    await ProcessPaymentWithRetryAsync(request.Value, cancellationToken);
+                    await HandlePaymentAsync(request.Value, cancellationToken);
                 else
-                    await Task.Delay(5, cancellationToken);
+                    await Task.Delay(TimeSpan.FromMilliseconds(5), cancellationToken);
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error processing payment queue.");
-                await Task.Delay(100, cancellationToken);
+                await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
             }
         }
     }
 
-    private async Task ProcessPaymentWithRetryAsync(PaymentRequest request, CancellationToken cancellationToken)
+    private async Task HandlePaymentAsync(PaymentRequest request, CancellationToken cancellationToken = default)
     {
         const int maxImmediateRetries = 1;
         var requestedAt = DateTime.UtcNow;
@@ -66,6 +65,12 @@ public sealed class PaymentProcessorWorker(
 
                 var payment = Payment.Create(request.CorrelationId, request.Amount, requestedAt, processor);
                 await paymentRepository.SaveAsync(payment, cancellationToken);
+
+                if (processor is not PaymentProcessor.Fallback) 
+                    return;
+                
+                var delay = await GetFallbackDelayAsync(cancellationToken);
+                await Task.Delay(TimeSpan.FromMilliseconds(delay), cancellationToken);
                 return;
             }
             catch (Exception ex)
@@ -76,4 +81,11 @@ public sealed class PaymentProcessorWorker(
 
         await paymentQueue.EnqueueWithDelay(request, TimeSpan.FromSeconds(1), cancellationToken);
     }
+
+    private async Task<int> GetFallbackDelayAsync(CancellationToken cancellationToken = default) 
+        => await paymentQueue.GetApproximateCountAsync(cancellationToken) switch
+        {
+            > 1000 => 25,
+            _ => 50
+        };
 }
