@@ -37,4 +37,7 @@ public sealed class InMemoryPaymentQueue : IPaymentQueue
             ? Task.FromResult<PaymentRequest?>(request)
             : Task.FromResult<PaymentRequest?>(null);
     }
+
+    public Task<int> GetApproximateCountAsync(CancellationToken cancellationToken = default)
+        => Task.FromResult(_immediateQueue.Count + _delayedQueue.Count);
 }
