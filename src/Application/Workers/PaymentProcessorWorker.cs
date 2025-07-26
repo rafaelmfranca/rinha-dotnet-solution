@@ -85,7 +85,7 @@ public sealed class PaymentProcessorWorker(
     private async Task<int> GetFallbackDelayAsync(CancellationToken cancellationToken = default) 
         => await paymentQueue.GetApproximateCountAsync(cancellationToken) switch
         {
-            > 1000 => 25,
-            _ => 50
+            > 1000 => 30,
+            _ => 60
         };
 }
