@@ -31,8 +31,7 @@ public static class DependencyInjection
             {
                 MaxConnectionsPerServer = 20,
                 EnableMultipleHttp2Connections = true
-            })
-            .Services;
+            }).Services;
 
     private static IServiceCollection ConfigureOptions(this IServiceCollection services, IConfiguration configuration)
         => services
@@ -48,9 +47,9 @@ public static class DependencyInjection
         });
 
     private static IServiceCollection AddRedis(this IServiceCollection services)
-        => services.AddSingleton<IConnectionMultiplexer>(sp =>
+        => services.AddSingleton<IDatabase>(sp =>
         {
             var settings = sp.GetRequiredService<IOptions<CacheSettings>>();
-            return ConnectionMultiplexer.Connect(settings.Value.ConnectionString);
+            return ConnectionMultiplexer.Connect(settings.Value.ConnectionString).GetDatabase();
         });
 }

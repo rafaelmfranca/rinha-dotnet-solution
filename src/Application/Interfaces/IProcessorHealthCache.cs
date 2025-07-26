@@ -5,7 +5,7 @@ namespace Application.Interfaces;
 
 public interface IProcessorHealthCache
 {
-    Task<ProcessorHealthStatus?> GetHealthAsync(
+    Task<ProcessorHealthStatus> GetHealthAsync(
         PaymentProcessor processor,
         CancellationToken cancellationToken = default
     );
