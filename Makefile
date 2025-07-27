@@ -1,4 +1,4 @@
-.PHONY: start stop tests results clean help
+.PHONY: start stop tests results clean build-and-publish help
 
 help:
 	@echo "Available targets:"
@@ -8,6 +8,7 @@ help:
 	@echo "  tests               - Run k6 load tests against the application"
 	@echo "  results             - View partial test results using bat"
 	@echo "  clean               - Stop and clean up all containers, volumes, and networks"
+	@echo "  publish             - Build and push multi-platform Docker images (amd64 and arm64)"
 	@echo "  help                - Show this help message"
 
 start:
@@ -40,6 +41,10 @@ tests:
 results:
 	@echo "\nViewing partial test results...\n"
 	bat rinha-test/results/partial-results.json
+
+publish:
+	@echo "\nBuilding and publishing multi-platform Docker images...\n"
+	./build-and-publish.sh
 
 clean:
 	@echo "\nRemoving unused containers, networks, and volumes...\n"
