@@ -29,7 +29,7 @@ services:
       resources:
         limits:
           cpus: "0.15"
-          memory: "150MB"
+          memory: "130MB"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d rinha"]
       interval: 10s
@@ -40,6 +40,7 @@ services:
       - backend-network
   
   backend-01: &backend
+    image: rafaelgiori/rinha-dotnet:amd64-20250726214906
     environment:
       MONITORED_PROCESSOR: "default"
       Cache__ConnectionString: "cache:6379"
