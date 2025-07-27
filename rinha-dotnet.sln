@@ -22,6 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 								infra/init.sql = infra/init.sql
 								README.md = README.md
 								Makefile = Makefile
+								build-and-publish.sh = build-and-publish.sh
 								.dockerignore = .dockerignore
 								.gitignore = .gitignore
 				EndProjectSection
