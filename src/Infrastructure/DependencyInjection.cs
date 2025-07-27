@@ -25,7 +25,7 @@ public static class DependencyInjection
             .AddSingleton<IProcessorHealthCache, ProcessorHealthCache>()
             .AddHttpClient<IPaymentProcessorGateway, PaymentProcessorGateway>(client =>
             {
-                client.Timeout = TimeSpan.FromSeconds(3);
+                client.Timeout = TimeSpan.FromSeconds(2);
             })
             .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
             {
